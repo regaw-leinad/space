@@ -1,6 +1,4 @@
-var CLOCKWISE = 1;
-var COUNTER_CLOCKWISE = -1;
-var DEBUG_RENDER = false;
+var DEBUG_RENDER = true;
 
 var arena;
 var ship;
@@ -34,17 +32,17 @@ function preUpdate() {
 }
 
 function update() {
-    if (keyIsDown(RIGHT_ARROW)) {
+    if (keyIsDown(RIGHT_ARROW) || keyIsDown(KEY_D)) {
         ship.rotate(CLOCKWISE);
-    } else if (keyIsDown(LEFT_ARROW)) {
+    } else if (keyIsDown(LEFT_ARROW) || keyIsDown(KEY_A)) {
         ship.rotate(COUNTER_CLOCKWISE);
     }
 
-    if (keyIsDown(UP_ARROW)) {
+    if (keyIsDown(UP_ARROW) || keyIsDown(KEY_W)) {
         ship.thrust();
     }
 
-    if (keyIsDown(DOWN_ARROW)) {
+    if (keyIsDown(DOWN_ARROW) || keyIsDown(KEY_S)) {
         ship.thrust(true);
     }
 
@@ -79,6 +77,19 @@ function render() {
 
     ship.render();
 
+    if (DEBUG_RENDER) {
+        rotate(-ship.heading);
+
+        var headingVector = p5.Vector.fromAngle(ship.heading).setMag(60);
+        var moveVector = ship.velocity.copy().mult(10);
+
+        strokeWeight(2);
+        stroke(0, 0, 255);
+        line(0, 0, headingVector.x, headingVector.y);
+        stroke(0, 255, 0);
+        line(0, 0, moveVector.x, moveVector.y);
+    }
+
     pop();
 
     if (DEBUG_RENDER) {
@@ -99,7 +110,7 @@ function render() {
 }
 
 function keyPressed() {
-    if (key === 'D') {
+    if (keyCode === KEY_Z) {
         DEBUG_RENDER = !DEBUG_RENDER;
     }
 }

@@ -27,7 +27,7 @@ function Ship(position) {
     this.rotate = function (direction) {
         this.heading += direction * this.rotationAmount;
 
-        // Keep within bounds of
+        // Keep within bounds of two pi
         if (this.heading >= TWO_PI) {
             this.heading -= TWO_PI;
         } else if (this.heading <= -TWO_PI) {
@@ -47,15 +47,11 @@ function Ship(position) {
         }
 
         // Limit top speed
-        this.velocity.limit(6);
+        this.velocity.limit(8);
     }
 
     this.render = function () {
-        //push();
-
         noFill();
-        // translate(this.position.x, this.position.y);
-        // rotate(this.heading);
 
         // Draw the fire if we're thrusting
         if (this.isThrusting) {
@@ -88,8 +84,6 @@ function Ship(position) {
             stroke(255, 0, 0);
             ellipse(0, 0, this.radius * 2);
         }
-
-        //pop();
     }
 
     this.move = function (vector) {

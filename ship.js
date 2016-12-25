@@ -11,6 +11,7 @@ function Ship(position) {
     this.heading = 0;
     this.isThrusting = false;
     this.isRetrograde = false;
+    this.mass = this.radius * 2;
 
     this.preUpdate = function () {
         // Reset the flags here...

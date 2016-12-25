@@ -73,6 +73,8 @@ function update() {
     for (var i = 0; i < asteroids.length; i++) {
         var asteroid = asteroids[i];
 
+        asteroid.calculateCollision(ship);
+
         for (var j = i + 1; j < asteroids.length; j++) {
             asteroid.calculateCollision(asteroids[j]);
         }

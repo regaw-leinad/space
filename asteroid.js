@@ -37,19 +37,19 @@ function Asteroid(arena, position, radius) {
                 this.position.x < o.position.x + totalRadius &&
                 this.position.y + totalRadius > o.position.y &&
                 this.position.y < o.position.y + totalRadius)) {
-            return undefined;
+            return false;
         }
 
         // get the actual disatance
         var d = dist(this.position.x, this.position.y, o.position.x, o.position.y);
         if (d > totalRadius) {
-            return undefined;
+            return false;
         }
 
         // We have a collision! :D
 
         var mass1 = this.radius;
-        var mass2 = o.radius;
+        var mass2 = o.mass || o.radius;
 
         var vx1 = this.velocity.x;
         var vy1 = this.velocity.y;
@@ -68,6 +68,8 @@ function Asteroid(arena, position, radius) {
 
         this.position.add(this.velocity);
         o.position.add(o.velocity);
+
+        return true;
     }
 
     this.update = function () {

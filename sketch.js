@@ -1,4 +1,4 @@
-var DEBUG_RENDER = true;
+var DEBUG_RENDER = false;
 
 var arena;
 var ship;

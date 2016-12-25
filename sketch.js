@@ -11,7 +11,25 @@ function setup() {
     arena.setShip(ship);
 
     for (var i = 0; i < 500; i++) {
-        asteroids.push(new Asteroid(arena, createVector(random(arena.width), random(arena.height))));
+        var position = createVector(random(arena.width), random(arena.height));
+        var radius = random(20, 50);
+
+        var validPlace = true;
+
+        for (var a = 0; a < asteroids.length; a++) {
+            var asteroid = asteroids[a];
+
+            var d = dist(asteroid.position.x, asteroid.position.y, position.x, position.y);
+            if (d <= radius + asteroid.radius) {
+                validPlace = false;
+                i--;
+                break;
+            }
+        }
+
+        if (validPlace) {
+            asteroids.push(new Asteroid(arena, position, radius));
+        }
     }
 
     textFont('Helvetica');

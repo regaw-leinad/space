@@ -3,6 +3,7 @@ var counter = 0;
 function Asteroid(arena, position, radius) {
     this.arena = arena;
     this.id = counter++;
+    this.shouldRender = false;
 
     if (position) {
         this.position = position.copy();
@@ -36,20 +37,20 @@ function Asteroid(arena, position, radius) {
         } else if (this.heading <= -TWO_PI) {
             this.heading += TWO_PI;
         }
-    }
 
-    this.render = function () {
         var view = this.arena.getView();
 
         // If the asteroid is out of the view, don't render it!
-        var shouldSkipRender = !overlaps(view, {
+        this.shouldRender = overlaps(view, {
             x: this.position.x - this.radius,
             y: this.position.y - this.radius,
             width: this.radius * 2,
             height: this.radius * 2
         });
+    }
 
-        if (shouldSkipRender) {
+    this.render = function () {
+        if (!this.shouldRender) {
             return;
         }
 

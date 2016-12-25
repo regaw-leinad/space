@@ -7,15 +7,12 @@ var asteroids = [];
 function setup() {
     createCanvas(windowWidth, windowHeight);
     arena = new Arena(10000, 10000);
-    // ship = new Ship(createVector(floor(random(arena.width)), floor(random(arena.height))));
     ship = new Ship(createVector(arena.width / 2, arena.height / 2));
     arena.setShip(ship);
 
     for (var i = 0; i < 500; i++) {
         asteroids.push(new Asteroid(arena, createVector(random(arena.width), random(arena.height))));
     }
-
-    // floor(random(arena.width)), floor(random(arena.height))
 
     textFont('Helvetica');
     textSize(12);
@@ -54,6 +51,14 @@ function update() {
         asteroid.update();
         arena.ensureBounds(asteroid);
     });
+
+    for (var i = 0; i < asteroids.length; i++) {
+        var asteroid = asteroids[i];
+
+        for (var j = i + 1; j < asteroids.length; j++) {
+            asteroid.calculateCollision(asteroids[j]);
+        }
+    }
 }
 
 function render() {

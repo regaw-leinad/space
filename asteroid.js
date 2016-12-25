@@ -28,7 +28,50 @@ function Asteroid(arena, position, radius) {
         this.offsets[i] = random(-this.radius * 0.2, this.radius * 0.8);
     }
 
+    this.calculateCollision = function (o) {
+        var totalRadius = this.radius + o.radius;
+
+        // Optimized AABB collision check
+        // No square root needed to check if they're near each other
+        if (!(this.position.x + totalRadius > o.position.x &&
+                this.position.x < o.position.x + totalRadius &&
+                this.position.y + totalRadius > o.position.y &&
+                this.position.y < o.position.y + totalRadius)) {
+            return undefined;
+        }
+
+        // get the actual disatance
+        var d = dist(this.position.x, this.position.y, o.position.x, o.position.y);
+        if (d > totalRadius) {
+            return undefined;
+        }
+
+        // We have a collision! :D
+
+        var mass1 = this.radius;
+        var mass2 = o.radius;
+
+        var vx1 = this.velocity.x;
+        var vy1 = this.velocity.y;
+        var vx2 = o.velocity.x;
+        var vy2 = o.velocity.y;
+
+        var newVx1 = (vx1 * (mass1 - mass2) + (2 * mass2 * vx2)) / (mass1 + mass2);
+        var newVy1 = (vy1 * (mass1 - mass2) + (2 * mass2 * vy2)) / (mass1 + mass2);
+        var newVx2 = (vx2 * (mass2 - mass1) + (2 * mass1 * vx1)) / (mass1 + mass2);
+        var newVy2 = (vy2 * (mass2 - mass1) + (2 * mass1 * vy1)) / (mass1 + mass2);
+
+        this.velocity.x = newVx1;
+        this.velocity.y = newVy1;
+        o.velocity.x = newVx2;
+        o.velocity.y = newVy2;
+
+        this.position.add(this.velocity);
+        o.position.add(o.velocity);
+    }
+
     this.update = function () {
+
         this.position.add(this.velocity);
         this.heading += this.spinSpeed;
 

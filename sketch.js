@@ -1,8 +1,10 @@
-var DEBUG_RENDER = false;
+const SPACE_BAR = 32;
+let DEBUG_RENDER = false;
 
-var arena;
-var ship;
-var asteroids = [];
+let arena;
+let ship;
+let asteroids = [];
+let bullets = [];
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -10,16 +12,16 @@ function setup() {
     ship = new Ship(createVector(arena.width / 2, arena.height / 2));
     arena.setShip(ship);
 
-    for (var i = 0; i < 500; i++) {
-        var position = createVector(random(arena.width), random(arena.height));
-        var radius = random(20, 50);
+    for (let i = 0; i < 500; i++) {
+        const position = createVector(random(arena.width), random(arena.height));
+        const radius = random(20, 50);
 
-        var validPlace = true;
+        let validPlace = true;
 
-        for (var a = 0; a < asteroids.length; a++) {
-            var asteroid = asteroids[a];
+        for (let a = 0; a < asteroids.length; a++) {
+            let asteroid = asteroids[a];
 
-            var d = dist(asteroid.position.x, asteroid.position.y, position.x, position.y);
+            const d = dist(asteroid.position.x, asteroid.position.y, position.x, position.y);
             if (d <= radius + asteroid.radius) {
                 validPlace = false;
                 i--;
@@ -79,6 +81,32 @@ function update() {
             asteroid.calculateCollision(asteroids[j]);
         }
     }
+
+    for (var i = bullets.length - 1; i >= 0; i--) {
+        var bullet = bullets[i];
+        bullet.update();
+
+        for (var j = asteroids.length - 1; j >= 0; j--) {
+            var asteroid = asteroids[j];
+
+            if (!bulletCollides(bullet, asteroid)) {
+                continue;
+            }
+
+            if (asteroid.radius > 15) {
+                for (var a = 0; a < 2; a++) {
+                    var newAsteroid = new Asteroid(arena, asteroid.position, asteroid.radius / 2);
+                    newAsteroid.position.add(newAsteroid.velocity.copy().setMag(newAsteroid.radius * 2.1));
+                    asteroids.push(newAsteroid);
+                }
+            }
+
+            bullets.splice(i, 1);
+            asteroids.splice(j, 1);
+
+            break;
+        }
+    }
 }
 
 function render() {
@@ -95,6 +123,10 @@ function render() {
     arena.render();
     asteroids.forEach(function (asteroid) {
         asteroid.render();
+    });
+
+    bullets.forEach(function (bullet) {
+        bullet.render();
     });
 
     translate(ship.position.x, ship.position.y);
@@ -130,12 +162,26 @@ function render() {
         text('Is Thrusting: ' + !!ship.isThrusting, 5, 60);
         text('Is Retrograde: ' + !!ship.isRetrograde, 5, 75);
 
-        text(frameRate().toFixed(), width - 20, height - 10);
+        text(frameRate().toFixed(), width - 50, height - 50);
     }
 }
 
+function bulletCollides(bullet, object) {
+    return dist(bullet.position.x, bullet.position.y, object.position.x, object.position.y) <= object.radius;
+}
+
 function keyPressed() {
-    if (keyCode === KEY_Z) {
+    if (keyCode === SPACE_BAR) {
+        var b = new Bullet(ship.getShotPosition(), ship.velocity, ship.heading);
+        bullets.push(b);
+
+        setTimeout(function () {
+            var idx = bullets.indexOf(b);
+            if (idx != -1) {
+                bullets.splice(idx, 1);
+            }
+        }, 5000);
+    } else if (keyCode === KEY_Z) {
         DEBUG_RENDER = !DEBUG_RENDER;
     }
 }

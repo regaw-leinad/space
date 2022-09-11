@@ -11,7 +11,7 @@ function Ship(position) {
     this.heading = 0;
     this.isThrusting = false;
     this.isRetrograde = false;
-    this.mass = this.radius * 2;
+    this.mass = this.radius / 10;
 
     this.preUpdate = function () {
         // Reset the flags here...
@@ -23,6 +23,13 @@ function Ship(position) {
 
         // Update position with the velocity
         this.position.add(this.velocity);
+    }
+
+    this.getShotPosition = function () {
+        var x = (this.radius + 5) * cos(this.heading);
+        var y = this.radius * sin(this.heading);
+
+        return createVector(x, y).add(this.position);
     }
 
     this.rotate = function (direction) {

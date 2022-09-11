@@ -51,6 +51,7 @@ function Asteroid(arena, position, radius) {
         var mass1 = this.radius;
         var mass2 = o.mass || o.radius;
 
+        var scale = o.mass ? 0.5 : 1;
         var vx1 = this.velocity.x;
         var vy1 = this.velocity.y;
         var vx2 = o.velocity.x;
@@ -69,11 +70,13 @@ function Asteroid(arena, position, radius) {
         this.position.add(this.velocity);
         o.position.add(o.velocity);
 
+        o.velocity.x = newVx2 * scale;
+        o.velocity.y = newVy2 * scale;
+
         return true;
     }
 
     this.update = function () {
-
         this.position.add(this.velocity);
         this.heading += this.spinSpeed;
 
